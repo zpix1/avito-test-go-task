@@ -1,0 +1,137 @@
+basePath: /
+definitions:
+  github_com_zpix1_avito-test-task_pkg_entities.GetSlugsResponse:
+    properties:
+      slug_names:
+        items:
+          type: string
+        type: array
+    type: object
+  github_com_zpix1_avito-test-task_pkg_entities.Slug:
+    properties:
+      name:
+        type: string
+    type: object
+  github_com_zpix1_avito-test-task_pkg_entities.SlugUpdate:
+    properties:
+      add_slug_names:
+        items:
+          type: string
+        type: array
+      delete_slug_names:
+        items:
+          type: string
+        type: array
+      user_id:
+        type: integer
+    type: object
+  pkg_handler.errorMessage:
+    properties:
+      error:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is an API with CRUD operations on slugs.
+  title: slugs REST API
+  version: "1.0"
+paths:
+  /api/v1/slugs:
+    put:
+      consumes:
+      - application/json
+      description: Create a slug by name
+      parameters:
+      - description: Slug object
+        in: body
+        name: slug
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_zpix1_avito-test-task_pkg_entities.Slug'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: integer
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/pkg_handler.errorMessage'
+      summary: Creation of a list
+  /api/v1/slugs/{slug_name}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete slug by name
+      parameters:
+      - description: Slug name
+        in: path
+        name: slug_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/pkg_handler.errorMessage'
+      summary: Deletion of a slug
+  /api/v1/slugs/get:
+    get:
+      consumes:
+      - application/json
+      description: Get slugs by user id
+      parameters:
+      - description: User id
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_zpix1_avito-test-task_pkg_entities.GetSlugsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/pkg_handler.errorMessage'
+      summary: Getting user slugs
+  /api/v1/slugs/update:
+    post:
+      consumes:
+      - application/json
+      description: Update user slugs by user id and slug names
+      parameters:
+      - description: Slug update object
+        in: body
+        name: slug_update
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_zpix1_avito-test-task_pkg_entities.SlugUpdate'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/pkg_handler.errorMessage'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/pkg_handler.errorMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/pkg_handler.errorMessage'
+      summary: Update user slugs
+swagger: "2.0"
