@@ -17,7 +17,7 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/api/v1/slugs": {
-            "put": {
+            "post": {
                 "description": "Create a slug by name",
                 "consumes": [
                     "application/json"
@@ -25,7 +25,7 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Creation of a list",
+                "summary": "Creation of a slug",
                 "parameters": [
                     {
                         "description": "Slug object",
@@ -88,8 +88,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/slugs/history": {
+            "get": {
+                "description": "Get user slugs history",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/csv"
+                ],
+                "summary": "Get user slugs history in CSV format",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Start datetime unixtime (seconds)",
+                        "name": "start",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "End datetime unixtime (seconds)",
+                        "name": "end",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/pkg_handler.errorMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/slugs/update": {
-            "post": {
+            "put": {
                 "description": "Update user slugs by user id and slug names",
                 "consumes": [
                     "application/json"

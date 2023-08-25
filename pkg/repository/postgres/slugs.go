@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"github.com/jackc/pgx/v4"
+	"github.com/sirupsen/logrus"
 )
 
 func (r *Repository) CreateSlug(slugName string) (int, error) {
@@ -30,7 +31,25 @@ func (r *Repository) UpdateUserSlugs(userId int, addSlugNames []string, deleteSl
 	}
 	br := r.pool.SendBatch(context.Background(), batch)
 	_, err := br.Exec()
-	return err
+	if err != nil {
+		return err
+	}
+	go func() {
+		for _, addSlugName := range addSlugNames {
+			err := r.SaveSlugActionHistory(userId, addSlugName, false)
+			// history is not so important to stop slugs requests
+			if err != nil {
+				logrus.Warn("failed to add entry to slug history", addSlugName)
+			}
+		}
+		for _, deleteSlugName := range deleteSlugNames {
+			err := r.SaveSlugActionHistory(userId, deleteSlugName, true)
+			if err != nil {
+				logrus.Warn("failed to add entry to slug history", deleteSlugName)
+			}
+		}
+	}()
+	return nil
 }
 
 func (r *Repository) GetUserSlugs(userId int) ([]string, error) {
@@ -38,16 +57,18 @@ func (r *Repository) GetUserSlugs(userId int) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	defer rows.Close()
+
 	var slugNames []string
 	for rows.Next() {
-		var r string
-		err := rows.Scan(&r)
+		var sn string
+		err := rows.Scan(&sn)
 
 		if err != nil {
 			return nil, err
 		}
-		slugNames = append(slugNames, r)
+		slugNames = append(slugNames, sn)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

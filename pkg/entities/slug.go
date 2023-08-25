@@ -1,5 +1,7 @@
 package entities
 
+import "time"
+
 type Slug struct {
 	Name string `json:"name"`
 }
@@ -12,4 +14,11 @@ type SlugUpdate struct {
 
 type GetSlugsResponse struct {
 	SlugNames []string `json:"slug_names"`
+}
+
+type SlugHistoryEntry struct {
+	UserId   int
+	SlugName string
+	Removed  bool
+	DoneAt   time.Time
 }

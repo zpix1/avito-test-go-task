@@ -6,11 +6,12 @@ import (
 	entity "github.com/zpix1/avito-test-task/pkg/entities"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // CreateSlug godoc
 //
-//	@Summary		Creation of a list
+//	@Summary		Creation of a slug
 //	@Description	Create a slug by name
 //	@Accept			json
 //	@Produce		json
@@ -115,4 +116,46 @@ func (h *Handler) GetUserSlugs(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"slug_names": slugNames,
 	})
+}
+
+// GetSlugHistoryCsv godoc
+//
+//	@Summary		Get user slugs history in CSV format
+//	@Description	Get user slugs history
+//	@Accept			json
+//	@Produce		text/csv
+//	@Param			user_id	query		int	true	"User id"
+//	@Param			start	query		int	true	"Start datetime unixtime (seconds)"
+//	@Param			end		query		int	true	"End datetime unixtime (seconds)"
+//	@Success		200		{object}	string
+//	@Failure		500		{object}	errorMessage
+//	@Router			/api/v1/slugs/history [get]
+func (h *Handler) GetSlugHistoryCsv(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Query("user_id"))
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err)
+		return
+	}
+	start, err := strconv.Atoi(c.Query("start"))
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err)
+		return
+	}
+	end, err := strconv.Atoi(c.Query("end"))
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	csv, err := h.service.GetSlugHistoryCsv(userId,
+		time.Unix(int64(start), 0),
+		time.Unix(int64(end), 0))
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Header("Content-Type", "text/csv; charset=utf-8")
+
+	c.String(http.StatusOK, csv)
 }

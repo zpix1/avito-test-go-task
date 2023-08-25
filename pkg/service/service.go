@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/zpix1/avito-test-task/pkg/repository"
+	"time"
 )
 
 type Service struct {
@@ -13,6 +14,8 @@ type SlugsImplementation interface {
 	DeleteSlug(slugName string) error
 	UpdateUserSlugs(userId int, addSlugNames []string, deleteSlugNames []string) error
 	GetUserSlugs(userId int) ([]string, error)
+
+	GetSlugHistoryCsv(userId int, startDate time.Time, endDate time.Time) (string, error)
 }
 
 type Implementation interface {

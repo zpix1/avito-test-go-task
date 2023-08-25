@@ -9,7 +9,7 @@ remove:
 	docker rmi slugs
 
 migrate:
-	migrate -path ./migrations/postgres/schemas -database postgres://postgres:secret@localhost:5436/slugs?sslmode=disable up
+	migrate -path ./migrations/postgres/schemas -database postgres://postgres:change_me1@localhost:5432/slugs?sslmode=disable up
 
 swagger:
 	swag init --parseDependency  --parseInternal -g cmd/main.go

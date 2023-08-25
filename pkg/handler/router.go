@@ -13,12 +13,13 @@ func (h *Handler) GetRouter() *gin.Engine {
 
 	api := router.Group("/api/v1")
 	{
-		lists := api.Group("/slugs")
+		slugs := api.Group("/slugs")
 		{
-			lists.POST("/", h.CreateSlug)
-			lists.GET("/get", h.GetUserSlugs)
-			lists.PUT("/update", h.UpdateUserSlugs)
-			lists.DELETE("/:slug_name", h.DeleteSlug)
+			slugs.POST("/", h.CreateSlug)
+			slugs.GET("/get", h.GetUserSlugs)
+			slugs.PUT("/update", h.UpdateUserSlugs)
+			slugs.DELETE("/:slug_name", h.DeleteSlug)
+			slugs.GET("/history", h.GetSlugHistoryCsv)
 		}
 	}
 

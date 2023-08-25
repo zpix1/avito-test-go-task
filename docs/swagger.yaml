@@ -37,7 +37,7 @@ info:
   version: "1.0"
 paths:
   /api/v1/slugs:
-    put:
+    post:
       consumes:
       - application/json
       description: Create a slug by name
@@ -59,7 +59,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/pkg_handler.errorMessage'
-      summary: Creation of a list
+      summary: Creation of a slug
   /api/v1/slugs/{slug_name}:
     delete:
       consumes:
@@ -104,8 +104,41 @@ paths:
           schema:
             $ref: '#/definitions/pkg_handler.errorMessage'
       summary: Getting user slugs
+  /api/v1/slugs/history:
+    get:
+      consumes:
+      - application/json
+      description: Get user slugs history
+      parameters:
+      - description: User id
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      - description: Start datetime unixtime (seconds)
+        in: query
+        name: start
+        required: true
+        type: integer
+      - description: End datetime unixtime (seconds)
+        in: query
+        name: end
+        required: true
+        type: integer
+      produces:
+      - text/csv
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/pkg_handler.errorMessage'
+      summary: Get user slugs history in CSV format
   /api/v1/slugs/update:
-    post:
+    put:
       consumes:
       - application/json
       description: Update user slugs by user id and slug names
