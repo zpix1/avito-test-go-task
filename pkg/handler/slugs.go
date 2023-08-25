@@ -17,7 +17,7 @@ import (
 //	@Param			slug	body		entity.Slug	true	"Slug object"
 //	@Success		201		{integer}	int
 //	@Failure		500		{object}	errorMessage
-//	@Router			/api/v1/slugs [put]
+//	@Router			/api/v1/slugs [post]
 func (h *Handler) CreateSlug(c *gin.Context) {
 	var slug entity.Slug
 
@@ -48,7 +48,7 @@ func (h *Handler) CreateSlug(c *gin.Context) {
 //	@Failure		400	{object}	errorMessage
 //	@Failure		401	{object}	errorMessage
 //	@Failure		500	{object}	errorMessage
-//	@Router			/api/v1/slugs/update [post]
+//	@Router			/api/v1/slugs/update [put]
 func (h *Handler) UpdateUserSlugs(c *gin.Context) {
 	var slugUpdate entity.SlugUpdate
 

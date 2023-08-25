@@ -15,10 +15,10 @@ func (h *Handler) GetRouter() *gin.Engine {
 	{
 		lists := api.Group("/slugs")
 		{
-			lists.PUT("/", h.CreateSlug)
-			lists.DELETE("/:slug_name", h.DeleteSlug)
-			lists.POST("/update", h.UpdateUserSlugs)
+			lists.POST("/", h.CreateSlug)
 			lists.GET("/get", h.GetUserSlugs)
+			lists.PUT("/update", h.UpdateUserSlugs)
+			lists.DELETE("/:slug_name", h.DeleteSlug)
 		}
 	}
 
