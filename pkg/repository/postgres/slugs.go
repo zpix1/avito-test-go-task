@@ -35,7 +35,7 @@ func (r *Repository) DeleteSlug(slugName string) error {
 		go func() {
 			err := r.SaveSlugActionHistory(userId, slugName, true)
 			if err != nil {
-				logrus.Warn("failed to add entry to slug history", slugName)
+				logrus.Warn("failed to add entry to slug history ", slugName)
 			}
 		}()
 	}
@@ -53,7 +53,7 @@ func (r *Repository) UpdateUserSlugs(userId int, addSlugNames []string, deleteSl
 			go func() {
 				err := r.SaveSlugActionHistoryWithTime(userId, addSlugName, true, validUntil)
 				if err != nil {
-					logrus.Warn("failed to add entry to slug history", addSlugName)
+					logrus.Warn("failed to add entry to slug history ", addSlugName)
 				}
 			}()
 		}
@@ -72,13 +72,13 @@ func (r *Repository) UpdateUserSlugs(userId int, addSlugNames []string, deleteSl
 			err := r.SaveSlugActionHistory(userId, addSlugName, false)
 			// history is not so important to stop slugs requests
 			if err != nil {
-				logrus.Warn("failed to add entry to slug history", addSlugName)
+				logrus.Warn("failed to add entry to slug history ", addSlugName)
 			}
 		}
 		for _, deleteSlugName := range deleteSlugNames {
 			err := r.SaveSlugActionHistory(userId, deleteSlugName, true)
 			if err != nil {
-				logrus.Warn("failed to add entry to slug history", deleteSlugName)
+				logrus.Warn("failed to add entry to slug history ", deleteSlugName)
 			}
 		}
 	}()

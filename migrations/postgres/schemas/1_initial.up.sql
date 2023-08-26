@@ -18,7 +18,7 @@ CREATE TABLE slugs_users
 CREATE TABLE slugs_history
 (
     user_id INTEGER,
-    slug_name SLUG_NAME REFERENCES slugs(name) ON DELETE CASCADE,
+    slug_name SLUG_NAME,
     removed boolean,
     created_at TIMESTAMP DEFAULT current_timestamp
 )
