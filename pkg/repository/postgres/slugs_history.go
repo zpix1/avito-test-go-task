@@ -14,9 +14,18 @@ func (r *Repository) SaveSlugActionHistory(userId int, slugName string, removed 
 	return err
 }
 
+func (r *Repository) SaveSlugActionHistoryWithTime(userId int, slugName string, removed bool, time time.Time) error {
+	_, err := r.pool.Exec(
+		context.Background(),
+		"INSERT INTO slugs_history(user_id, slug_name, removed, created_at) VALUES ($1, $2, $3, $4)",
+		userId, slugName, removed, time)
+	return err
+}
+
 func (r *Repository) GetSlugHistory(userId int, startDate time.Time, endDate time.Time) ([]entity.SlugHistoryEntry, error) {
-	rows, err := r.pool.Query(context.Background(),
-		"SELECT user_id, slug_name, removed, created_at FROM slugs_history WHERE user_id=$1 AND $2 <= created_at  AND created_at<= $3",
+	rows, err := r.pool.Query(
+		context.Background(),
+		"SELECT user_id, slug_name, removed, created_at FROM slugs_history WHERE user_id=$1 AND $2 <= created_at  AND created_at <= $3 ORDER BY created_at",
 		userId, startDate, endDate)
 	if err != nil {
 		return nil, err

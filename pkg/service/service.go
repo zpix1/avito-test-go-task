@@ -12,7 +12,7 @@ type Service struct {
 type SlugsImplementation interface {
 	CreateSlug(slugName string) (int, error)
 	DeleteSlug(slugName string) error
-	UpdateUserSlugs(userId int, addSlugNames []string, deleteSlugNames []string) error
+	UpdateUserSlugs(userId int, addSlugNames []string, deleteSlugNames []string, ttl uint64) error
 	GetUserSlugs(userId int) ([]string, error)
 
 	GetSlugHistoryCsv(userId int, startDate time.Time, endDate time.Time) (string, error)

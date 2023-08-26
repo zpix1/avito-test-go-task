@@ -11,7 +11,7 @@ import (
 
 // CreateSlug godoc
 //
-//	@Summary		Creation of a slug
+//	@Summary		Create a slug
 //	@Description	Create a slug by name
 //	@Accept			json
 //	@Produce		json
@@ -58,7 +58,13 @@ func (h *Handler) UpdateUserSlugs(c *gin.Context) {
 		return
 	}
 
-	err := h.service.UpdateUserSlugs(slugUpdate.UserId, slugUpdate.AddSlugNames, slugUpdate.DeleteSlugNames)
+	err := h.service.UpdateUserSlugs(
+		slugUpdate.UserId,
+		slugUpdate.AddSlugNames,
+		slugUpdate.DeleteSlugNames,
+		slugUpdate.Ttl,
+	)
+
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err)
 		return
@@ -69,7 +75,7 @@ func (h *Handler) UpdateUserSlugs(c *gin.Context) {
 
 // DeleteSlug godoc
 //
-//	@Summary		Deletion of a slug
+//	@Summary		Delete slug
 //	@Description	Delete slug by name
 //	@Accept			json
 //	@Produce		json
@@ -92,7 +98,7 @@ func (h *Handler) DeleteSlug(c *gin.Context) {
 
 // GetUserSlugs godoc
 //
-//	@Summary		Getting user slugs
+//	@Summary		Get user slugs
 //	@Description	Get slugs by user id
 //	@Accept			json
 //	@Produce		json
@@ -120,8 +126,8 @@ func (h *Handler) GetUserSlugs(c *gin.Context) {
 
 // GetSlugHistoryCsv godoc
 //
-//	@Summary		Get user slugs history in CSV format
-//	@Description	Get user slugs history
+//	@Summary		Get user slugs history
+//	@Description	Get user slugs history in CSV format
 //	@Accept			json
 //	@Produce		text/csv
 //	@Param			user_id	query		int	true	"User id"

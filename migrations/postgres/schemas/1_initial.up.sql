@@ -8,8 +8,10 @@ CREATE TABLE slugs
 
 CREATE TABLE slugs_users
 (
-    slug_name SLUG_NAME REFERENCES slugs(name),
+    slug_name SLUG_NAME REFERENCES slugs(name) ON DELETE CASCADE,
     user_id INTEGER,
+--     NULL means no timelimit present
+    valid_until TIMESTAMP,
     CONSTRAINT slugs_users_pk PRIMARY KEY (slug_name, user_id)
 );
 

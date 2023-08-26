@@ -22,6 +22,8 @@ definitions:
         items:
           type: string
         type: array
+      ttl:
+        type: integer
       user_id:
         type: integer
     type: object
@@ -59,7 +61,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/pkg_handler.errorMessage'
-      summary: Creation of a slug
+      summary: Create a slug
   /api/v1/slugs/{slug_name}:
     delete:
       consumes:
@@ -80,7 +82,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/pkg_handler.errorMessage'
-      summary: Deletion of a slug
+      summary: Delete slug
   /api/v1/slugs/get:
     get:
       consumes:
@@ -103,12 +105,12 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/pkg_handler.errorMessage'
-      summary: Getting user slugs
+      summary: Get user slugs
   /api/v1/slugs/history:
     get:
       consumes:
       - application/json
-      description: Get user slugs history
+      description: Get user slugs history in CSV format
       parameters:
       - description: User id
         in: query
@@ -136,7 +138,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/pkg_handler.errorMessage'
-      summary: Get user slugs history in CSV format
+      summary: Get user slugs history
   /api/v1/slugs/update:
     put:
       consumes:

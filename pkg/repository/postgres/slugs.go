@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/jackc/pgx/v4"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 func (r *Repository) CreateSlug(slugName string) (int, error) {
@@ -17,17 +18,49 @@ func (r *Repository) CreateSlug(slugName string) (int, error) {
 }
 
 func (r *Repository) DeleteSlug(slugName string) error {
-	_, err := r.pool.Exec(context.Background(), "DELETE FROM slugs WHERE name=$1", slugName)
+	rows, err := r.pool.Query(
+		context.Background(),
+		"SELECT user_id FROM slugs_users WHERE slug_name=$1 AND (valid_until >= CURRENT_TIMESTAMP OR valid_until IS NULL)",
+		slugName,
+	)
+
+	for rows.Next() {
+		var userId int
+		err := rows.Scan(&userId)
+
+		if err != nil {
+			return err
+		}
+
+		go func() {
+			err := r.SaveSlugActionHistory(userId, slugName, true)
+			if err != nil {
+				logrus.Warn("failed to add entry to slug history", slugName)
+			}
+		}()
+	}
+	_, err = r.pool.Exec(context.Background(), "DELETE FROM slugs WHERE name=$1", slugName)
 	return err
 }
 
-func (r *Repository) UpdateUserSlugs(userId int, addSlugNames []string, deleteSlugNames []string) error {
+func (r *Repository) UpdateUserSlugs(userId int, addSlugNames []string, deleteSlugNames []string, validUntil time.Time) error {
 	batch := &pgx.Batch{}
 	for _, addSlugName := range addSlugNames {
-		batch.Queue("INSERT INTO slugs_users(slug_name, user_id) VALUES ($1, $2)", addSlugName, userId)
+		if validUntil.IsZero() {
+			batch.Queue("INSERT INTO slugs_users(slug_name, user_id) VALUES ($1, $2)", addSlugName, userId)
+		} else {
+			batch.Queue("INSERT INTO slugs_users(slug_name, user_id, valid_until) VALUES ($1, $2, $3)", addSlugName, userId, validUntil)
+			go func() {
+				err := r.SaveSlugActionHistoryWithTime(userId, addSlugName, true, validUntil)
+				if err != nil {
+					logrus.Warn("failed to add entry to slug history", addSlugName)
+				}
+			}()
+		}
 	}
 	for _, deleteSlugName := range deleteSlugNames {
-		batch.Queue("DELETE FROM slugs_users WHERE slug_name=$1 AND user_id=$2", deleteSlugName, userId)
+		// do not delete slugs that are not valid anymore, they are handled automatically
+		batch.Queue("DELETE FROM slugs_users WHERE slug_name=$1 AND user_id=$2 AND valid_until >= CURRENT_TIMESTAMP", deleteSlugName, userId)
 	}
 	br := r.pool.SendBatch(context.Background(), batch)
 	_, err := br.Exec()
@@ -53,7 +86,11 @@ func (r *Repository) UpdateUserSlugs(userId int, addSlugNames []string, deleteSl
 }
 
 func (r *Repository) GetUserSlugs(userId int) ([]string, error) {
-	rows, err := r.pool.Query(context.Background(), "SELECT slug_name FROM slugs_users WHERE user_id=$1", userId)
+	rows, err := r.pool.Query(
+		context.Background(),
+		"SELECT slug_name FROM slugs_users WHERE user_id=$1 AND (valid_until >= CURRENT_TIMESTAMP OR valid_until IS NULL)",
+		userId,
+	)
 	if err != nil {
 		return nil, err
 	}

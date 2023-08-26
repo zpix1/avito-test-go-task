@@ -25,7 +25,7 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Creation of a slug",
+                "summary": "Create a slug",
                 "parameters": [
                     {
                         "description": "Slug object",
@@ -62,7 +62,7 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Getting user slugs",
+                "summary": "Get user slugs",
                 "parameters": [
                     {
                         "type": "integer",
@@ -90,14 +90,14 @@ const docTemplate = `{
         },
         "/api/v1/slugs/history": {
             "get": {
-                "description": "Get user slugs history",
+                "description": "Get user slugs history in CSV format",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "text/csv"
                 ],
-                "summary": "Get user slugs history in CSV format",
+                "summary": "Get user slugs history",
                 "parameters": [
                     {
                         "type": "integer",
@@ -192,7 +192,7 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Deletion of a slug",
+                "summary": "Delete slug",
                 "parameters": [
                     {
                         "type": "string",
@@ -250,6 +250,9 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                },
+                "ttl": {
+                    "type": "integer"
                 },
                 "user_id": {
                     "type": "integer"
