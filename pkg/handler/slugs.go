@@ -26,7 +26,7 @@ func (h *Handler) CreateSlug(c *gin.Context) {
 		return
 	}
 
-	slugId, err := h.service.CreateSlug(slug.Name)
+	slugId, err := h.service.CreateSlug(slug.Name, slug.AutoAddPercent)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err)
 		return

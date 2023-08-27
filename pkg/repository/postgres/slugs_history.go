@@ -30,7 +30,6 @@ func (r *Repository) GetSlugHistory(userId int, startDate time.Time, endDate tim
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	var slugHistory []entity.SlugHistoryEntry

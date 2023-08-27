@@ -10,7 +10,7 @@ type Service struct {
 }
 
 type SlugsImplementation interface {
-	CreateSlug(slugName string) (int, error)
+	CreateSlug(slugName string, autoAddPercent uint32) (int, error)
 	DeleteSlug(slugName string) error
 	UpdateUserSlugs(userId int, addSlugNames []string, deleteSlugNames []string, ttl uint64) error
 	GetUserSlugs(userId int) ([]string, error)

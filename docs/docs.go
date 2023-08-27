@@ -231,6 +231,9 @@ const docTemplate = `{
         "github_com_zpix1_avito-test-task_pkg_entities.Slug": {
             "type": "object",
             "properties": {
+                "auto_add_percent": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 }

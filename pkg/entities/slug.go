@@ -3,7 +3,8 @@ package entities
 import "time"
 
 type Slug struct {
-	Name string `json:"name"`
+	Name           string `json:"name"`
+	AutoAddPercent uint32 `json:"auto_add_percent"`
 }
 
 type SlugUpdate struct {
@@ -22,4 +23,9 @@ type SlugHistoryEntry struct {
 	SlugName string
 	Removed  bool
 	DoneAt   time.Time
+}
+
+type SlugAutoAdd struct {
+	SlugName      string
+	AutoAddWeight uint32
 }
