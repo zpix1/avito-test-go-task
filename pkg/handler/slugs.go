@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	entity "github.com/zpix1/avito-test-task/pkg/entities"
 	"net/http"
@@ -85,7 +84,6 @@ func (h *Handler) UpdateUserSlugs(c *gin.Context) {
 //	@Router			/api/v1/slugs/{slug_name} [delete]
 func (h *Handler) DeleteSlug(c *gin.Context) {
 	slugName := c.Param("slug_name")
-	fmt.Println("slug name delete", slugName)
 
 	err := h.service.DeleteSlug(slugName)
 	if err != nil {

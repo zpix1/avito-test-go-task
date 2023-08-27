@@ -97,7 +97,7 @@ func (r *Repository) GetUserSlugs(userId int) ([]string, error) {
 
 	defer rows.Close()
 
-	var slugNames []string
+	slugNames := make([]string, 0)
 	for rows.Next() {
 		var sn string
 		err := rows.Scan(&sn)
