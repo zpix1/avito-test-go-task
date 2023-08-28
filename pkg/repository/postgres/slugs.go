@@ -72,7 +72,7 @@ func (r *Repository) UpdateUserSlugs(userId int, addSlugNames []string, deleteSl
 	}
 	for _, deleteSlugName := range deleteSlugNames {
 		// do not delete slugs that are not valid anymore, they are handled automatically
-		batch.Queue("DELETE FROM slugs_users WHERE slug_name=$1 AND user_id=$2 AND valid_until >= CURRENT_TIMESTAMP", deleteSlugName, userId)
+		batch.Queue("DELETE FROM slugs_users WHERE slug_name=$1 AND user_id=$2 AND valid_until >= CURRENT_TIMESTAMP OR valid_until IS NULL", deleteSlugName, userId)
 	}
 	if batch.Len() > 0 {
 		br := r.pool.SendBatch(context.Background(), batch)
@@ -137,7 +137,7 @@ func (r *Repository) GetUserSlugs(userId int) ([]string, error) {
 func (r *Repository) GetAutoAddSlugs(userId int) ([]entities.SlugAutoAdd, error) {
 	rows, err := r.pool.Query(
 		context.Background(),
-		"SELECT DISTINCT name, auto_add_weight FROM slugs LEFT OUTER JOIN slugs_users ON slugs.name = slugs_users.slug_name AND user_id = $1 WHERE user_id IS NULL",
+		"SELECT DISTINCT name, auto_add_weight FROM slugs LEFT OUTER JOIN slugs_history ON slugs.name = slugs_history.slug_name AND user_id = $1 WHERE user_id IS NULL",
 		userId,
 	)
 	if err != nil {

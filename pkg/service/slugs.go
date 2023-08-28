@@ -18,7 +18,7 @@ func normalizePercent(percent uint32) (uint32, error) {
 
 func (s *Service) CreateSlug(slugName string, autoAddPercent uint32) (int, error) {
 	normalizedPercent, err := normalizePercent(autoAddPercent)
-	logrus.Warn("converted ", autoAddPercent, " to ", normalizedPercent)
+	logrus.Debug("converted ", autoAddPercent, " to ", normalizedPercent)
 	if err != nil {
 		return 0, err
 	}
@@ -39,7 +39,7 @@ func (s *Service) UpdateUserSlugs(userId int, addSlugNames []string, deleteSlugN
 
 func (s *Service) autoAddSlugs(userId int) error {
 	autoAddSlugNames, err := s.repository.GetAutoAddSlugs(userId)
-	logrus.Warn("autoAddSlugnames", autoAddSlugNames)
+	logrus.Debug("autoAddSlugnames", autoAddSlugNames)
 	if err != nil {
 		return err
 	}
@@ -53,12 +53,11 @@ func (s *Service) autoAddSlugs(userId int) error {
 		}
 		value := binary.BigEndian.Uint32(hash.Sum(nil))
 		// so user won and his userId is chosen to have slugName
-		logrus.Warn("value vs auto add weight ", value, " ", sn.AutoAddWeight, ", slug=", sn.SlugName)
+		logrus.Debug("value vs auto add weight ", value, " ", sn.AutoAddWeight, ", slug=", sn.SlugName)
 		if value < sn.AutoAddWeight {
 			toAddSlugNames = append(toAddSlugNames, sn.SlugName)
 		}
 	}
-	logrus.Warn(userId, " ", toAddSlugNames, " kek")
 	return s.repository.UpdateUserSlugs(userId, toAddSlugNames, nil, time.Time{})
 }
 

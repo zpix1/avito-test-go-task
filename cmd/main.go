@@ -22,17 +22,17 @@ import (
 //	@BasePath	/
 
 func main() {
-	logger := getLogger()
+	setupLogger()
 
 	if err := initConfig(); err != nil {
-		logger.Fatalf("error intializing config: %s", err.Error())
+		logrus.Fatalf("error intializing config: %s", err.Error())
 	}
-	logger.Infof("config initialized successfully")
+	logrus.Infof("config initialized successfully")
 
 	if err := godotenv.Load(); err != nil {
-		logger.Fatalf("error loading env variables: %s", err.Error())
+		logrus.Fatalf("error loading env variables: %s", err.Error())
 	}
-	logger.Infof("env variables successfully loaded")
+	logrus.Infof("env variables successfully loaded")
 
 	postgresCfg := postgres.Config{
 		Username:     viper.GetString("db.username"),
@@ -45,9 +45,9 @@ func main() {
 
 	postgresPool, err := postgres.NewConnectionPool(context.Background(), postgresCfg)
 	if err != nil {
-		logger.Fatalf("database connection error: %s", err.Error())
+		logrus.Fatalf("database connection error: %s", err.Error())
 	}
-	logger.Infof("database connection successfully made")
+	logrus.Infof("database connection successfully made")
 
 	repository := postgres.NewRepository(postgresPool)
 	service := service2.NewService(repository)
@@ -76,10 +76,8 @@ func initConfig() error {
 	return viper.ReadInConfig()
 }
 
-func getLogger() *logrus.Logger {
-	logger := logrus.New()
-	logger.SetFormatter(new(logrus.JSONFormatter))
-	logger.SetReportCaller(true)
-
-	return logger
+func setupLogger() {
+	logrus.SetLevel(logrus.DebugLevel)
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+	logrus.SetReportCaller(true)
 }
